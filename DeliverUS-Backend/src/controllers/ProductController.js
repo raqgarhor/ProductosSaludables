@@ -38,6 +38,12 @@ const show = async function (req, res) {
 
 const create = async function (req, res) {
   let newProduct = Product.build(req.body)
+  // SOLUCION
+  newProduct.fats = req.body.fats
+  newProduct.proteins = req.body.proteins
+  newProduct.carbs = req.body.carbs
+  newProduct.calories = req.body.fats * 9 + req.body.proteins * 4 + req.body.carbs * 4
+
   try {
     newProduct = await newProduct.save()
     res.json(newProduct)
@@ -48,7 +54,11 @@ const create = async function (req, res) {
 
 const update = async function (req, res) {
   try {
-    await Product.update(req.body, { where: { id: req.params.productId } })
+    // SOLUCION
+    const caloriesTotal = req.body.fats * 9 + req.body.proteins * 4 + req.body.carbs * 4
+    await Product.update(
+      { ...req.body, fats: req.body.fats, proteins: req.body.proteins, carbs: req.body.carbs, calories: caloriesTotal },
+      { where: { id: req.params.productId } })
     const updatedProduct = await Product.findByPk(req.params.productId)
     res.json(updatedProduct)
   } catch (err) {

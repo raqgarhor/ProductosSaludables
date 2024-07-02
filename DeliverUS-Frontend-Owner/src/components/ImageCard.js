@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   card: {
     marginTop: 20,
     marginHorizontal: '1%',
-    height: 140,
+    height: 200,
     padding: 2,
     alignItems: 'flex-start',
     flexDirection: 'row',
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
   image: {
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
-    height: 136,
-    width: 136
+    height: 200,
+    width: 200
   },
   cardBody: {
     paddingHorizontal: 10,

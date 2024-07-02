@@ -21,7 +21,8 @@ export default function EditProductScreen ({ navigation, route }) {
   const [backendErrors, setBackendErrors] = useState()
   const [product, setProduct] = useState({})
 
-  const [initialProductValues, setInitialProductValues] = useState({ name: null, description: null, price: null, order: null, productCategoryId: null, availability: null, image: null })
+  // SOLUCION
+  const [initialProductValues, setInitialProductValues] = useState({ name: null, description: null, price: null, order: null, productCategoryId: null, availability: null, image: null, carbs: 0, fats: 0, proteins: 0 })
   const validationSchema = yup.object().shape({
     name: yup
       .string()
@@ -42,7 +43,24 @@ export default function EditProductScreen ({ navigation, route }) {
       .number()
       .positive()
       .integer()
-      .required('Product category is required')
+      .required('Product category is required'),
+    // SOLUCION
+    fats: yup
+      .number()
+      .min(0, 'Fats must be between 0 and 100')
+      .max(100, 'Fats must be between 0 and 100')
+      .required('Fats is required'),
+    proteins: yup
+      .number()
+      .min(0, 'Proteins must be between 0 and 100')
+      .max(100, 'Proteins must be between 0 and 100')
+      .required('Proteins is required'),
+    carbs: yup
+      .number()
+      .min(0, 'Carbs must be between 0 and 100')
+      .max(100, 'Carbs must be between 0 and 100')
+      .required('Carbs is required')
+
   })
 
   useEffect(() => {
@@ -143,7 +161,20 @@ export default function EditProductScreen ({ navigation, route }) {
                 name='order'
                 label='Order/position to be rendered:'
               />
-
+              {/* SOLUCION */ }
+               <InputItem
+                name='fats'
+                label='Fats:'
+              />
+              <InputItem
+                name='proteins'
+                label='Proteins:'
+              />
+              <InputItem
+                name='carbs'
+                label='Carbs'
+              />
+               {/* SOLUCION */ }
               <DropDownPicker
                 open={open}
                 value={values.productCategoryId}

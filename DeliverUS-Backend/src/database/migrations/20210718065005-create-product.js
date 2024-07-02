@@ -57,7 +57,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: new Date()
-      }
+      },
+      // SOLUCION
+      fats: Sequelize.DOUBLE,
+      proteins: Sequelize.DOUBLE,
+      carbs: Sequelize.DOUBLE,
+      calories: Sequelize.DOUBLE
     })
   },
   down: async (queryInterface, Sequelize) => {

@@ -14,6 +14,33 @@ const checkRestaurantExists = async (value, { req }) => {
     return Promise.reject(new Error(err))
   }
 }
+/*
+Debido a la normativa reguladora de alimentación, se pide que se informe al cliente de la cantidad de carbohidratos,
+proteínas y grasas por cada 100 gramos de cada uno de los productos que están a la venta en DeliverUS.
+*/
+
+const check100grams = async (grasas, proteinas, carbohidratos) => {
+  if (parseFloat(grasas) + parseFloat(proteinas) + parseFloat(carbohidratos) !== 100.0) {
+    return Promise.reject(new Error('The sum of 100 grams cannot exceed 100.'))
+  } else {
+    return Promise.resolve()
+  }
+}
+
+/*
+Dada la existencia de platos hipercalóricos que no están recomendados en una dieta saludable, se pide que un plato no
+pueda contener más de 1000 calorías por 100g de producto. Para ello, se usará la siguiente formula aproximada de cálculo
+energético: Calorías producto = (grasas * 9) + (proteínas * 4) + (carbohidratos * 4)
+*/
+
+const noMoreThan1000Calories = async (grasas, proteinas, carbohidratos) => {
+  if (parseFloat(grasas) * 9 + parseFloat(proteinas) * 4 + parseFloat(carbohidratos) * 4 > 1000.0) {
+    return Promise.reject(new Error('The sum of 1000 calories cannot exceed 1000.'))
+  } else {
+    return Promise.resolve()
+  }
+}
+
 const create = [
   check('name').exists().isString().isLength({ min: 1, max: 255 }).trim(),
   check('description').optional({ checkNull: true, checkFalsy: true }).isString().isLength({ min: 1 }).trim(),
@@ -28,7 +55,13 @@ const create = [
   }).withMessage('Please upload an image with format (jpeg, png).'),
   check('image').custom((value, { req }) => {
     return checkFileMaxSize(req, 'image', maxFileSize)
-  }).withMessage('Maximum file size of ' + maxFileSize / 1000000 + 'MB')
+  }).withMessage('Maximum file size of ' + maxFileSize / 1000000 + 'MB'),
+  check('fats').custom((value, { req }) => {
+    return check100grams(value, req.body.proteins, req.body.carbs)
+  }).withMessage('The sum of 100 grams cannot exceed 100.'),
+  check('fats').custom((value, { req }) => {
+    return noMoreThan1000Calories(value, req.body.proteins, req.body.carbs)
+  }).withMessage('The sum of 100 grams cannot exceed 100.')
 ]
 
 const update = [
@@ -45,7 +78,13 @@ const update = [
   check('image').custom((value, { req }) => {
     return checkFileMaxSize(req, 'image', maxFileSize)
   }).withMessage('Maximum file size of ' + maxFileSize / 1000000 + 'MB'),
-  check('restaurantId').not().exists()
+  check('restaurantId').not().exists(),
+  check('fats').custom((value, { req }) => {
+    return check100grams(value, req.body.proteins, req.body.carbs)
+  }).withMessage('The sum of 100 grams cannot exceed 100.'),
+  check('fats').custom((value, { req }) => {
+    return noMoreThan1000Calories(value, req.body.proteins, req.body.carbs)
+  }).withMessage('The sum of 100 grams cannot exceed 100.')
 ]
 
 export { create, update }

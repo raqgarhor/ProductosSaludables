@@ -55,6 +55,11 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
   }
 
   const renderProduct = ({ item }) => {
+    const Fats = item.fats
+    const Proteins = item.proteins
+    const Carbs = item.carbs
+    const calories = Fats * 9 + Proteins * 4 + Carbs * 4
+
     return (
       <ImageCard
         imageUri={item.image ? { uri: process.env.API_BASE_URL + '/' + item.image } : defaultProductImage}
@@ -62,6 +67,13 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
       >
         <TextRegular numberOfLines={2}>{item.description}</TextRegular>
         <TextSemiBold textStyle={styles.price}>{item.price.toFixed(2)}€</TextSemiBold>
+        {<TextSemiBold style={{ fontWeight: 'bold' }}>Nutritional composition:</TextSemiBold>}
+        <View style={{ flexDirection: 'column', alignSelf: 'left', paddingLeft: 10 }}>
+          <TextRegular>Fats: {item.fats}</TextRegular>
+          <TextRegular>Proteins: {item.proteins}</TextRegular>
+          <TextRegular>Carbs: {item.carbs}</TextRegular>
+          <TextRegular>Calories: {calories}</TextRegular>
+        </View>
         {!item.availability &&
           <TextRegular textStyle={styles.availability }>Not available</TextRegular>
         }
@@ -241,8 +253,8 @@ const styles = StyleSheet.create({
   },
   actionButtonsContainer: {
     flexDirection: 'row',
-    bottom: 5,
-    position: 'absolute',
+    bottom: -20,
+    position: 'relative',
     width: '90%'
   }
 })
